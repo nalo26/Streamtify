@@ -7,57 +7,75 @@ import spotipy
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyOAuth
 
+from timer import Timer
+
 load_dotenv()
 
 SCOPE = "user-read-playback-state"
-REFRESH_RATE = int(os.getenv("REFRESH_RATE"))
-COVER_SIZE = int(os.getenv("COVER_SIZE"))
+REFRESH_RATE: float = float(os.getenv("REFRESH_RATE", 5))
+COVER_SIZE: int = int(os.getenv("COVER_SIZE", 1))
 
-OUTPUT_FORMAT = os.getenv("OUTPUT_FORMAT")
-OUTPUT_FOLDER = os.getenv("OUTPUT_FOLDER")
-OUTPUT_FILE = os.getenv("OUTPUT_FILE")
-OUTPUT_COVER = os.getenv("OUTPUT_COVER")
+OUTPUT_FORMAT: str = os.getenv("OUTPUT_FORMAT", '"{TITLE}" - {ARTIST} ({CURRENT}/{DURATION})')
+OUTPUT_FOLDER: Path = Path(os.getenv("OUTPUT_FOLDER", "output"))
+OUTPUT_FILE: Path = OUTPUT_FOLDER / (os.getenv("OUTPUT_FILE", "track.txt"))
+OUTPUT_COVER: Path = OUTPUT_FOLDER / (os.getenv("OUTPUT_COVER", "cover.jpg"))
 
 
 def ms_to_time(ms):
     return time.strftime("%M:%S", time.gmtime(ms / 1000))
 
 
+def current_milli_time():
+    return round(time.time() * 1000)
+
+
 class Spotify:
     def __init__(self):
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=SCOPE))
+        self.is_playing: bool = False
         self.title: str = None
         self.artist: str = None
         self.current: int = None
         self.duration: int = None
         self.last_time: int = None
         self.cover_link: str = None
-
         self.last_output: str = None
 
     def listen(self):
+        fetcher = Timer(REFRESH_RATE, self.fetch_track)
+        fetcher.start()
+
         while True:
-            track = self.sp.current_user_playing_track()
-            if track is None or track["is_playing"] is False:
-                print("No track playing")
-            else:
-                self.save_track(track)
+            try:
+                time.sleep(1)
                 self.export_track()
-            time.sleep(REFRESH_RATE)
+            except KeyboardInterrupt:
+                print("Exiting...")
+                fetcher.cancel()
+                break
+
+    def fetch_track(self):
+        print("Fetching...")
+        track = self.sp.current_user_playing_track()
+        self.is_playing = track is not None and track["is_playing"]
+        self.save_track(track)
 
     def save_track(self, track):
-        self.title = track["item"]["name"]
-        self.artist = ", ".join([artist["name"] for artist in track["item"]["artists"]])
+        song = track["item"]
+        self.title = song["name"]
+        self.artist = ", ".join([artist["name"] for artist in song["artists"]])
         self.current = track["progress_ms"]
-        self.duration = track["item"]["duration_ms"]
-        self.last_time = track["timestamp"]
-        self.cover_link = list(reversed(track["item"]["album"]["images"]))[COVER_SIZE]["url"]
+        self.duration = song["duration_ms"]
+        self.cover_link = list(reversed(song["album"]["images"]))[COVER_SIZE]["url"]
 
-    def export_track(self):
+        self.last_time = current_milli_time()
+
+    def export_track(self, no_save=False):
+        current = self.current + (current_milli_time() - self.last_time) if self.is_playing else self.current
         output = OUTPUT_FORMAT.format(
             TITLE=self.title,
             ARTIST=self.artist,
-            CURRENT=ms_to_time(self.current),
+            CURRENT=ms_to_time(current),
             DURATION=ms_to_time(self.duration),
         )
 
@@ -67,10 +85,13 @@ class Spotify:
 
         print(output)
 
-        with open(Path(OUTPUT_FOLDER) / OUTPUT_FILE, "w") as f:
+        if no_save:
+            return
+
+        with open(OUTPUT_FILE, "w") as f:
             f.write(output)
 
-        with open(Path(OUTPUT_FOLDER) / OUTPUT_COVER, "wb") as f:
+        with open(OUTPUT_COVER, "wb") as f:
             f.write(rq.get(self.cover_link).content)
 
 
@@ -82,4 +103,5 @@ if __name__ == "__main__":
 # - [x] get current track info
 # - [x] save track info to file
 # - [x] download image
+# - [x] Thread polling & progress calculation
 # - [ ] progress bar ??
