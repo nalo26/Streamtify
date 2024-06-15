@@ -61,6 +61,8 @@ class Spotify:
         self.save_track(track)
 
     def save_track(self, track):
+        if not self.is_playing:
+            return
         song = track["item"]
         self.title = song["name"]
         self.artist = ", ".join([artist["name"] for artist in song["artists"]])
@@ -71,6 +73,8 @@ class Spotify:
         self.last_time = current_milli_time()
 
     def export_track(self, no_save=False):
+        if not self.is_playing:
+            return
         current = self.current + (current_milli_time() - self.last_time) if self.is_playing else self.current
         output = OUTPUT_FORMAT.format(
             TITLE=self.title,
