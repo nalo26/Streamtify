@@ -69,7 +69,8 @@ class Spotify:
         self.artist = ", ".join([artist["name"] for artist in song["artists"]])
         self.current = track["progress_ms"]
         self.duration = song["duration_ms"]
-        self.cover_link = list(reversed(song["album"]["images"]))[COVER_SIZE]["url"]
+        if len(list(reversed(song["album"]["images"]))) > COVER_SIZE:
+            self.cover_link = list(reversed(song["album"]["images"]))[COVER_SIZE]["url"]
 
         self.last_time = current_milli_time()
 
