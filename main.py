@@ -40,6 +40,7 @@ class Spotify:
         self.last_time: int = None
         self.cover_link: str = None
         self.last_output: str = None
+        self.last_cover_link: str = None
 
     def listen(self):
         fetcher = Timer(REFRESH_RATE, self.fetch_track)
@@ -95,8 +96,11 @@ class Spotify:
         with open(OUTPUT_FILE, "w") as f:
             f.write(output)
 
-        with open(OUTPUT_COVER, "wb") as f:
-            f.write(rq.get(self.cover_link).content)
+        if self.last_cover_link != self.cover_link and self.cover_link != None:
+          self.last_cover_link = self.cover_link
+
+          with open(OUTPUT_COVER, "wb") as f:
+              f.write(rq.get(self.cover_link).content)
 
 
 if __name__ == "__main__":
