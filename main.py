@@ -45,7 +45,8 @@ class Spotify:
 
     def listen(self):
         print(
-            f"Fetching Spotify track every {REFRESH_RATE}s, using {'async' if ASYNC_FETCH else 'sync'} mode. [Ctrl+C to exit]"
+            f"Fetching Spotify track every {REFRESH_RATE}s, using "
+            f"{'async' if ASYNC_FETCH else 'sync'} mode. [Ctrl+C to exit]"
         )
         fetcher = Timer(REFRESH_RATE, self.fetch_track)
         if ASYNC_FETCH:
@@ -103,11 +104,12 @@ class Spotify:
         with open(OUTPUT_FILE, "w") as f:
             f.write(output)
 
-        if self.last_cover_link != self.cover_link and self.cover_link != None:
-          self.last_cover_link = self.cover_link
+        if self.cover_link is None or self.last_cover_link == self.cover_link:
+            return
+        self.last_cover_link = self.cover_link
 
-          with open(OUTPUT_COVER, "wb") as f:
-              f.write(rq.get(self.cover_link).content)
+        with open(OUTPUT_COVER, "wb") as f:
+            f.write(rq.get(self.cover_link).content)
 
 
 if __name__ == "__main__":
