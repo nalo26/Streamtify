@@ -12,6 +12,7 @@ from timer import Timer
 load_dotenv()
 
 SCOPE = "user-read-playback-state"
+ASYNC_FETCH: bool = bool(int(os.getenv("ASYNC_FETCH", 1)))
 REFRESH_RATE: float = float(os.getenv("REFRESH_RATE", 5))
 COVER_SIZE: int = int(os.getenv("COVER_SIZE", 1))
 
@@ -42,12 +43,18 @@ class Spotify:
         self.last_output: str = None
 
     def listen(self):
+        print(
+            f"Fetching Spotify track every {REFRESH_RATE}s, using {'async' if ASYNC_FETCH else 'sync'} mode. [Ctrl+C to exit]"
+        )
         fetcher = Timer(REFRESH_RATE, self.fetch_track)
-        fetcher.start()
+        if ASYNC_FETCH:
+            fetcher.start()
 
         while True:
             try:
                 time.sleep(1)
+                if not ASYNC_FETCH:
+                    self.fetch_track()
                 self.export_track()
             except KeyboardInterrupt:
                 print("Exiting...")
@@ -55,7 +62,6 @@ class Spotify:
                 break
 
     def fetch_track(self):
-        print("Fetching...")
         track = self.sp.current_user_playing_track()
         self.is_playing = track is not None and track["is_playing"]
         self.save_track(track)
