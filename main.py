@@ -101,7 +101,7 @@ class Spotify:
         if no_save:
             return
 
-        with open(OUTPUT_FILE, "w") as f:
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write(output)
 
         if self.cover_link is None or self.last_cover_link == self.cover_link:
