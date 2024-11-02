@@ -1,7 +1,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from .constants import COVER_SIZE, EXPORT_FORMAT, OUTPUT_FORMAT, REFRESH_RATE, SCOPE
+from .constants import CONSOLE_ECHO, COVER_SIZE, EXPORT_FORMAT, OUTPUT_FORMAT, REFRESH_RATE, SCOPE
 from .timer import Timer
 from .utils import current_milli_time, ms_to_time
 
@@ -47,16 +47,20 @@ class Tracking:
             self.cover_link = list(reversed(song["album"]["images"]))[COVER_SIZE]["url"]
 
         self.last_time = current_milli_time()
-        self.output = self.format_track()
 
     def format_track(self):
         current = self.current + (current_milli_time() - self.last_time) if self.is_playing else self.current
-        return OUTPUT_FORMAT.format(
+        if current > self.duration:
+            current = self.duration
+        formated = OUTPUT_FORMAT.format(
             TITLE=self.title,
             ARTIST=self.artist,
             CURRENT=ms_to_time(current),
             DURATION=ms_to_time(self.duration),
         )
+        if CONSOLE_ECHO and self.is_playing and self.last_output != formated:
+            print(formated)
+        return formated
 
     def listen(self):
         raise NotImplementedError

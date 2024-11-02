@@ -20,11 +20,11 @@ class _ServerTracking(Tracking):
 
     def export_track(self):
         with app.app_context():
+            self.output = self.format_track()
             if not self.is_playing or self.last_output == self.output:
                 return  # No export if not playing or no changes
-            self.last_output = self.output
-            print(self.output)
 
+            self.last_output = self.output
             data = {
                 "title": self.title,
                 "artist": self.artist,

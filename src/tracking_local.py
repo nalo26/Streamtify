@@ -19,10 +19,10 @@ class _LocalTracking(Tracking):
                 break
 
     def export_track(self):
+        self.output = self.format_track()
         if not self.is_playing or self.last_output == self.output:
             return  # No export if not playing or no changes
 
-        print(self.output)
         self.last_output = self.output
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write(self.output)
