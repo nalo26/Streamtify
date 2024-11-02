@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    gap: 1rem;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

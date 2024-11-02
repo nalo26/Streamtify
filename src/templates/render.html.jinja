@@ -1,0 +1,21 @@
+<html>
+
+<head>
+    <title>{{ track.output }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <img id="data-cover" src="{{ track.cover_link }}" />
+        <div class="info">
+            <h1 id="data-output">{{ track.output }}</h1>
+            <div id="progress"></div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

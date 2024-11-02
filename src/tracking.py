@@ -16,6 +16,7 @@ class Tracking:
         self.duration: int = None
         self.last_time: int = None
         self.output: str = None
+        self.last_output: str = None
         self.cover_link: str = None
         self.last_cover_link: str = None
 
@@ -58,4 +59,7 @@ class Tracking:
         )
 
     def listen(self):
+        raise NotImplementedError
+
+    def export_track(self):
         raise NotImplementedError

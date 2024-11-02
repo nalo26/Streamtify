@@ -6,5 +6,5 @@ if [ ! -d ".venv" ]; then
 fi
 
 source .venv/bin/activate
-python3 main.py
+python run.py
 deactivate
