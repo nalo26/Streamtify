@@ -49,6 +49,8 @@ class Tracking:
         self.last_time = current_milli_time()
 
     def format_track(self):
+        if not self.is_playing:
+            return
         current = self.current + (current_milli_time() - self.last_time) if self.is_playing else self.current
         if current > self.duration:
             current = self.duration

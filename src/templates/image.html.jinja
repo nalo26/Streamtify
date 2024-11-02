@@ -1,7 +1,7 @@
 <html>
 
 <body>
-    <img id="data" src="{{ data }}" />
+    <img id="data-{{ id }}" src="{{ data }}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js"
         crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
