@@ -43,18 +43,24 @@ class Tracking:
         self.artist = ", ".join([artist["name"] for artist in song["artists"]])
         self.current = track["progress_ms"]
         self.duration = song["duration_ms"]
-        if len(list(reversed(song["album"]["images"]))) > COVER_SIZE:
-            self.cover_link = list(reversed(song["album"]["images"]))[COVER_SIZE]["url"]
-
+        covers = list(reversed(song["album"]["images"]))
+        if len(covers) > COVER_SIZE:
+            self.cover_link = covers[COVER_SIZE]["url"]
+        else:
+            self.cover_link = f"static/nocover{COVER_SIZE}.jpg"
         self.last_time = current_milli_time()
 
     def format_track(self):
         if not self.is_playing:
             return
+        format = OUTPUT_FORMAT
+        if self.artist in ("", None):
+            format = format.replace("{ARTIST} - ", "")
+            format = format.replace(" - {ARTIST}", "")
         current = self.current + (current_milli_time() - self.last_time) if self.is_playing else self.current
         if current > self.duration:
             current = self.duration
-        formated = OUTPUT_FORMAT.format(
+        formated = format.format(
             TITLE=self.title,
             ARTIST=self.artist,
             CURRENT=ms_to_time(current),

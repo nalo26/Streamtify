@@ -3,7 +3,7 @@ window.addEventListener("load", function () {
   var socket = io();
 
   socket.on('update', function (data) {
-    console.log(data);
+    // console.log(data);
     let title = document.querySelector('#data-title');
     if (title)
       title.innerHTML = data.title;
@@ -17,7 +17,7 @@ window.addEventListener("load", function () {
       output.innerHTML = data.output;
 
     let cover = document.querySelector('#data-cover');
-    if (cover)
+    if (cover && !cover.src.endsWith(data.cover_link))
       cover.src = data.cover_link;
 
     // TODO: progress bar calculation

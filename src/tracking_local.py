@@ -1,4 +1,5 @@
 import time
+from pathlib import Path
 
 import requests as rq
 
@@ -32,7 +33,11 @@ class _LocalTracking(Tracking):
 
         self.last_cover_link = self.cover_link
         with open(OUTPUT_COVER, "wb") as f:
-            f.write(rq.get(self.cover_link).content)
+            if self.cover_link.startswith("http"):
+                f.write(rq.get(self.cover_link).content)
+            else:  # No cover, fallback to default local one
+                with open(Path(__file__).parent / Path(self.cover_link), "rb") as c:
+                    f.write(c.read())
 
 
 LocalTracking = _LocalTracking()  # Singleton instance for one tracking
