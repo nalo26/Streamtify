@@ -1,9 +1,14 @@
+import logging
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 
 from .constants import SERVER_HOST, SERVER_PORT
 from .timer import Timer
 from .tracking import Tracking
+
+log = logging.getLogger("werkzeug")
+log.setLevel(logging.ERROR)  # Disable Flask logging
 
 
 class _ServerTracking(Tracking):
@@ -48,7 +53,6 @@ def render():
 
 @app.route("/track")
 def track():
-    print(_track.output)
     return render_template("text.html.jinja", id="output", data=_track.output)
 
 

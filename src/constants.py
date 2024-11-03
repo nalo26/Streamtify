@@ -9,7 +9,7 @@ load_dotenv()
 
 SCOPE = "user-read-playback-state"
 
-CONSOLE_ECHO: bool = bool(os.getenv("CONSOLE_ECHO", False))
+CONSOLE_ECHO: bool = bool(int(os.getenv("CONSOLE_ECHO", 0)))
 REFRESH_RATE: float = float(os.getenv("REFRESH_RATE", 5))
 COVER_SIZE: int = int(os.getenv("COVER_SIZE", 1))
 
