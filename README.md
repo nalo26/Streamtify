@@ -23,7 +23,7 @@ cd Streamtify
 cp .env.example .env
 ```
 
-See the [configuration](#configuration) section to see how to make it work.
+See the [configuration](#configuration) section to see how to make it work before running it.
 
 ## Updating
 
@@ -54,16 +54,6 @@ On the new page, you can click on `edit` to copy the `Client ID`, and click on `
 Report those 3 values (`Client ID`, `Client Secret` and `Redirect URI`) to the 3 corresponding values of the config file.
 
 ### Config file
-
-Copy the example configuration file to edit it:
-
-```bash
-# For Windows
-copy .env.example .env
-
-# For Linux
-cp .env.example .env
-```
 
 Here's the whole configuration file with every value explained:
 
