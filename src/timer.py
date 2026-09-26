@@ -25,7 +25,6 @@ class Timer:
                     else:
                         self.function(*self.args, **self.kwargs)
 
-                    # Use sleep for simplicity
                     self._stop_event.wait(self.interval)
             finally:
                 self._loop.close()

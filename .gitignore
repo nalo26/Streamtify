@@ -1,5 +1,6 @@
 .venv
 .cache
 .env
+config.yaml
 output/
 __pycache__/

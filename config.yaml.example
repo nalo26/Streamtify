@@ -1,0 +1,20 @@
+smtc:
+  target_app: deezer.exe
+  thumbnail_cache_size: 50
+  refresh_rate: 1 # seconds
+
+global:
+  console_echo: false
+  output_format: '"{TITLE}" - {ARTIST} ({CURRENT}/{DURATION})'
+
+  # true: local server, false: local files
+  server_export: true
+
+local_export:
+  output_folder: output
+  output_file: track.txt
+  output_cover: cover.jpg
+
+server_export:
+  host: 127.0.0.1
+  port: 16053

@@ -7,7 +7,7 @@ from winsdk.windows.media.control import GlobalSystemMediaTransportControlsSessi
 from winsdk.windows.media.control import GlobalSystemMediaTransportControlsSessionManager as SMTCManager
 from winsdk.windows.storage.streams import DataReader
 
-from .constants import CONSOLE_ECHO, EXPORT_FORMAT, MAX_CACHE_SIZE, OUTPUT_FORMAT, REFRESH_RATE, SMTC_TARGET_APP
+from .constants import CONSOLE_ECHO, MAX_CACHE_SIZE, OUTPUT_FORMAT, REFRESH_RATE, SERVER_EXPORT, SMTC_TARGET_APP
 from .timer import Timer
 from .utils import current_milli_time, ms_to_time
 
@@ -32,7 +32,7 @@ class Tracking:
     async def run(self):
         self.manager = await SMTCManager.request_async()
         print(f"Fetching SMTC track every {REFRESH_RATE}s,")
-        print(f"exporting in {EXPORT_FORMAT.name} mode [Ctrl+C to exit]")
+        print(f"exporting in {'Server' if SERVER_EXPORT else 'Local'} mode [Ctrl+C to exit]")
         self.fetcher = Timer(REFRESH_RATE, self.fetch_track)
         self.fetcher.start()
 

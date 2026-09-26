@@ -1,24 +1,22 @@
-import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+from config import config
 
-from .utils import Format
+_config_smtc = config.get("smtc", {})
+SMTC_TARGET_APP: str = _config_smtc.get("target_app", "")
+MAX_CACHE_SIZE: int = _config_smtc.get("thumbnail_cache_size", 50)
+REFRESH_RATE: float = _config_smtc.get("refresh_rate", 1)
 
-load_dotenv()
+_config_global = config.get("global", {})
+CONSOLE_ECHO: bool = _config_global.get("console_echo", False)
+OUTPUT_FORMAT: str = _config_global.get("output_format", '"{TITLE}" - {ARTIST} ({CURRENT}/{DURATION})')
+SERVER_EXPORT: bool = _config_global.get("server_export", False)
 
-SMTC_TARGET_APP: str = os.getenv("SMTC_TARGET_APP", "deezer.exe")
-MAX_CACHE_SIZE: int = int(os.getenv("MAX_CACHE_SIZE", 50))
+_config_local = config.get("local_export", {})
+OUTPUT_FOLDER: Path = Path(_config_local.get("output_folder", "output"))
+OUTPUT_FILE: Path = OUTPUT_FOLDER / (_config_local.get("output_file", "track.txt"))
+OUTPUT_COVER: Path = OUTPUT_FOLDER / (_config_local.get("output_cover", "cover.jpg"))
 
-CONSOLE_ECHO: bool = bool(int(os.getenv("CONSOLE_ECHO", 0)))
-REFRESH_RATE: float = float(os.getenv("REFRESH_RATE", 5))
-
-OUTPUT_FORMAT: str = os.getenv("OUTPUT_FORMAT", '"{TITLE}" - {ARTIST} ({CURRENT}/{DURATION})')
-EXPORT_FORMAT: Format = Format(int(os.getenv("EXPORT_FORMAT", 0)))
-
-OUTPUT_FOLDER: Path = Path(os.getenv("OUTPUT_FOLDER", "output"))
-OUTPUT_FILE: Path = OUTPUT_FOLDER / (os.getenv("OUTPUT_FILE", "track.txt"))
-OUTPUT_COVER: Path = OUTPUT_FOLDER / (os.getenv("OUTPUT_COVER", "cover.jpg"))
-
-SERVER_HOST: str = os.getenv("SERVER_HOST", "localhost")
-SERVER_PORT: int = int(os.getenv("SERVER_PORT", 16053))
+_config_server = config.get("server_export", {})
+SERVER_HOST: str = _config_server.get("host", "localhost")
+SERVER_PORT: int = _config_server.get("port", 16053)

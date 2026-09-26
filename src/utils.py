@@ -1,10 +1,4 @@
 import time
-from enum import Enum
-
-
-class Format(Enum):
-    LOCAL: int = 0
-    SERVER: int = 1
 
 
 def ms_to_time(ms):
