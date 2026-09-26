@@ -24,7 +24,7 @@ class _ServerTracking(Tracking):
         export.cancel()
 
     def export_track(self):
-        with app.app_context():
+        with self.app.app_context():
             self.output = self.format_track()
             if not self.is_playing or self.last_output == self.output:
                 return  # No export if not playing or no changes

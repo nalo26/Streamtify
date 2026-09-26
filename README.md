@@ -1,13 +1,12 @@
-# Streamplify
-Get your current playing Spotify track to use on your OBS stream!
+# Streamtify
+Get your current playing track to use on your OBS stream, using Windows' SMTC API!
 
 ![Full render](render_example.png)
 
-- [Streamplify](#streamplify)
+- [Streamtify](#streamtify)
   - [Installation](#installation)
   - [Updating](#updating)
   - [Configuration](#configuration)
-    - [Spotify API](#spotify-api)
     - [Config file](#config-file)
     - [OBS configuration](#obs-configuration)
       - [Local file](#local-file)
@@ -41,36 +40,23 @@ pip install -r requirements.txt
 
 There is a bunch of steps to follow in order to allow the application to listen to your Spotify activity, and then configuring everything as you need.
 
-### Spotify API
-
-Go to your [Spotify developer dashboard](https://developer.spotify.com/dashboard) and click on `Create app`.
-
-Give it a name and description (for you to remember what it does), ignore website, and in the `Redirect URIs`, set a local address, like `http://localhost:16052`. You can change the port (numbers) for anything between 1000-60000.
-
-You don't have to check any option that come up next, except the Agreements, and then click on the `Save` button.
-
-On the new page, you can click on `edit` to copy the `Client ID`, and click on `View client secret` to copy it too.
-
-Report those 3 values (`Client ID`, `Client Secret` and `Redirect URI`) to the 3 corresponding values of the config file.
-
 ### Config file
 
 Here's the whole configuration file with every value explained:
 
 ```bash
-# The three values to config the access to the Spotify API (see # Spotify-API)
-SPOTIPY_CLIENT_ID="Add your client id here"
-SPOTIPY_CLIENT_SECRET="Add your client secret here"
-SPOTIPY_REDIRECT_URI="http://localhost:16052"
+# This is the app name you want to track audio from.
+# Can be any music provider, web browser... as long as it has media controls (video/audio)
+SMTC_TARGET_APP="deezer.exe"
+
+# Amount of cached track covers
+MAX_CACHE_SIZE=50
 
 # Weither the current track should be printed on the console as well
 CONSOLE_ECHO=0  # 0: off, 1: on
 
 # The time between two calls to the API to refresh the current track
 REFRESH_RATE=5  # seconds
-
-# The size of the cover image to use
-COVER_SIZE=1  # 0: small (64px), 1: medium (300px), 2: large (640px)
 
 # Formated output to use. You can format it as you want
 # You can use one, any or all of the variables:
@@ -135,12 +121,12 @@ Set the URL as the data you want to fetch, as follow: `http://localhost:<PORT><S
   - `/track` - The track render (as defined in `OUTPUT_FORMAT`)
   - `/title` - The title text only
   - `/artist` - The artist text only
-  - `/cover` - The cover image only (with its size as defined in `COVER_SIZE`)
+  - `/cover` - The cover image only
 
 > [!TIP]
 > If I want to add a source for the track render, I will setup the URL as `http://localhost:16053/track`.
 
-You can define the `Width` and `Height` parameters as you need, it will depends on the font size for the text. For the `/cover`, I recommend to set those to the width of the cover as defined in `COVER_SIZE`
+You can define the `Width` and `Height` parameters as you need, it will depends on the font size for the text. For the `/cover`, I recommend to set those `150px`, as it is the size from SMTC API.
 
 For the text data (`/track`, `/title` & `/artist`), you will surely **need to adjust the style** of the page to fit your needs (font family & size, color).
 
@@ -155,4 +141,4 @@ For the text data (`/track`, `/title` & `/artist`), you will surely **need to ad
 > }
 > ```
 > I set the Width to 1200, and Height to 100 using this example.  
-> For the cover, I use no custom CSS, and defined the Width and Height to 300.
+> For the cover, I use no custom CSS, and defined the Width and Height to 150.

@@ -1,7 +1,6 @@
+import base64
 import time
 from pathlib import Path
-
-import requests as rq
 
 from .constants import OUTPUT_COVER, OUTPUT_FILE
 from .tracking import Tracking
@@ -33,8 +32,9 @@ class _LocalTracking(Tracking):
 
         self.last_cover_link = self.cover_link
         with open(OUTPUT_COVER, "wb") as f:
-            if self.cover_link.startswith("http"):
-                f.write(rq.get(self.cover_link).content)
+            if self.cover_link.startswith("data:"):
+                _, _, cover = self.cover_link.partition(",")
+                f.write(base64.b64decode(cover))
             else:  # No cover, fallback to default local one
                 with open(Path(__file__).parent / Path(self.cover_link), "rb") as c:
                     f.write(c.read())

@@ -7,11 +7,11 @@ from .utils import Format
 
 load_dotenv()
 
-SCOPE = "user-read-playback-state"
+SMTC_TARGET_APP: str = os.getenv("SMTC_TARGET_APP", "deezer.exe")
+MAX_CACHE_SIZE: int = int(os.getenv("MAX_CACHE_SIZE", 50))
 
 CONSOLE_ECHO: bool = bool(int(os.getenv("CONSOLE_ECHO", 0)))
 REFRESH_RATE: float = float(os.getenv("REFRESH_RATE", 5))
-COVER_SIZE: int = int(os.getenv("COVER_SIZE", 1))
 
 OUTPUT_FORMAT: str = os.getenv("OUTPUT_FORMAT", '"{TITLE}" - {ARTIST} ({CURRENT}/{DURATION})')
 EXPORT_FORMAT: Format = Format(int(os.getenv("EXPORT_FORMAT", 0)))
